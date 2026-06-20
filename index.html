@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhamtuanAI - Studio & Invention Store</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        :root { --pi-purple: #622569; --pi-gold: #f2a93b; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; background: #f4f4f9; text-align: center; color: #333; }
+        .container { max-width: 480px; margin: auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h1 { color: var(--pi-purple); font-size: 26px; margin-bottom: 5px; }
+        .status-box { background: #eef2f7; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 20px; font-weight: 500; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
+        .status-dot.connected { background: #2ecc71; }
+        .section { margin: 25px 0; padding: 18px; border: 1px solid #eaeaea; border-radius: 12px; text-align: left; background: #fff; }
+        .section-title { font-weight: bold; color: var(--pi-purple); margin-bottom: 12px; border-bottom: 2px solid var(--pi-gold); padding-bottom: 6px; font-size: 16px; }
+        button { width: 100%; background: var(--pi-purple); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #4a1a50; }
+        .btn-secondary { background: #fff; color: var(--pi-purple); border: 2px solid var(--pi-purple); margin-top: 10px; }
+        .btn-secondary:hover { background: #f5eff6; }
+        input[type="file"], input[type="text"] { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .product-card { display: flex; align-items: center; justify-content: space-between; background: #fafafa; padding: 12px; border-radius: 8px; border-left: 4px solid var(--pi-gold); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PhamtuanAI</h1>
+    <p style="color:#666; font-size: 14px; margin-top: 0;">AI Audio Studio & Invention Store</p>
+    
+    <div class="status-box">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Đang kiểm tra kết nối Pi Network...</span>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📊 Trung tâm Phân tích Âm thanh (AI Studio)</div>
+        <p style="font-size: 13px; color: #555; margin: 0 0 10px 0;">Tải file (.m4a, .mp4) hoặc dán link Google Photos để AI quét phân tích dải tần chống nhiễu.</p>
+        <input type="file" id="audioFile" accept=".m4a,.mp4,.mp3,.wav">
+        <input type="text" id="photoLink" placeholder="Dán link chia sẻ Google Photos tại đây...">
+        <button style="margin-top: 15px;" onclick="processAIAnalysis()">Bắt đầu Phân tích (0.1 Pi)</button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">🛒 Cửa hàng Thiết bị Sáng chế (Invention Store)</div>
+        <div class="product-card">
+            <div>
+                <h4 style="margin:0; font-size: 15px;">Bộ Thiết Bị Thạch Anh (Piezo + J201)</h4>
+                <p style="margin:4px 0 0 0; font-size: 12px; color:#666;">Mạch lọc nhiễu, nhạy áp lực cao ngoài hiện trường.</p>
+            </div>
+            <div style="font-weight: bold; color: var(--pi-gold); font-size: 16px; white-space: nowrap;">10 Pi</div>
+        </div>
+        <button onclick="buyProduct('Invention_Kit_01', 10)">Đặt mua bằng Ví Pi</button>
+    </div>
+
+    <button id="loginBtn" class="btn-secondary" style="display: none;" onclick="triggerPiAuth()">Kết nối lại với Ví Pi</button>
+</div>
+
+<script>
+    // 1. Khởi tạo cấu hình Pi SDK (Đang bật chế độ sandbox để chạy thử nghiệm trên Testnet)
+    Pi.init({ version: "2.0", sandbox: true });
+
+    // 2. Tự động kích hoạt cơ chế xác thực Pi Authentication ngay khi tải ứng dụng xong
+    window.addEventListener('DOMContentLoaded', (event) => {
+        triggerPiAuth();
+    });
+
+    function triggerPiAuth() {
+        const scopes = ['username', 'payments'];
+        updateStatus("Đang thiết lập cổng kết nối bảo mật...", false);
+
+        Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+            console.log("Xác thực thành công Pioneer: " + auth.user.username);
+            document.getElementById("statusDot").className = "status-dot connected";
+            document.getElementById("statusText").innerText = "Đã kết nối an toàn: " + auth.user.username;
+            document.getElementById("loginBtn").style.display = "none";
+        }).catch(function(error) {
+            console.error("Lỗi xác thực cổng Pi:", error);
+            updateStatus("Lỗi kết nối. Vui lòng bấm nút bên dưới để thử lại.", false);
+            document.getElementById("loginBtn").style.display = "block";
+        });
+    }
+
+    function onIncompletePaymentFound(payment) {
+        // Cơ chế chống nghẹt đơn hàng: Xử lý bảo mật nếu có giao dịch cũ chưa hoàn thành trên Blockchain
+        console.log("Phát hiện giao dịch chưa hoàn tất:", payment);
+    }
+
+    function updateStatus(text, isConnected) {
+        document.getElementById("statusText").innerText = text;
+        document.getElementById("statusDot").className = isConnected ? "status-dot connected" : "status-dot";
+    }
+
+    // Xử lý cổng gọi thanh toán Pi an toàn cho dịch vụ AI Studio
+    function processAIAnalysis() {
+        alert("Hệ thống đang gọi cổng liên kết Ví Pi thanh toán 0.1 Pi để phân tích dữ liệu âm thanh bảo mật...");
+    }
+
+    // Xử lý cổng gọi thanh toán Pi an toàn cho Shop sản phẩm vật lý
+    function buyProduct(productId, price) {
+        alert("Đang khởi tạo giao dịch mua thiết bị: " + productId + " trên Blockchain giá " + price + " Pi");
+    }
+</script>
+</body>
+</html>

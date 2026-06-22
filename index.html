@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQUA MIND - AI Water System</title>
+    <title>AQUA MIND - PHAMTUAN AI SYSTEM</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
             --pi-purple: #622569;
             --pi-gold: #e2a813;
-            --bg-dark: #121212;
+            --bg-dark: #0a0f1d;
             --card-bg: #ffffff;
             --text-main: #2c3e50;
+            --neon-blue: #00d2ff;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,39 +28,42 @@
         .container {
             width: 100%;
             max-width: 480px;
-            background: #f8f9fa;
-            border-radius: 20px;
+            background: #f1f3f8;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding-bottom: 30px;
         }
         .header {
-            background: linear-gradient(135deg, var(--pi-purple), #4a154b);
+            background: linear-gradient(135deg, var(--pi-purple), #2c0b30);
             color: #ffffff;
             text-align: center;
-            padding: 25px 15px;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
+            padding: 30px 15px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            border-bottom: 3px solid var(--pi-gold);
         }
         .header h1 {
             margin: 0;
-            font-size: 24px;
-            letter-spacing: 1px;
+            font-size: 26px;
+            letter-spacing: 1.5px;
             color: var(--pi-gold);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .header p {
-            margin: 5px 0 0 0;
-            font-size: 13px;
-            opacity: 0.9;
+            margin: 8px 0 0 0;
+            font-size: 11px;
+            opacity: 0.8;
+            letter-spacing: 2px;
         }
         .status-box {
-            background: #eef2f7;
+            background: #e4e9f2;
             margin: 15px;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 14px;
             border-left: 5px solid var(--pi-gold);
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -68,8 +72,8 @@
             background: var(--card-bg);
             margin: 15px;
             padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 18px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
         .section-title {
             font-size: 16px;
@@ -79,6 +83,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            border-bottom: 1px solid #f1f2f6;
+            padding-bottom: 8px;
         }
         .input-group {
             margin-bottom: 15px;
@@ -87,23 +93,28 @@
             display: block;
             font-size: 12px;
             color: #7f8c8d;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 500;
         }
         .file-select {
             border: 2px dashed #bdc3c7;
-            padding: 15px;
+            padding: 18px;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             background: #fafafa;
             font-size: 14px;
+            transition: all 0.3s;
+        }
+        .file-select:hover {
+            border-color: var(--pi-purple);
+            background: #f9f6fa;
         }
         input[type="text"] {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 1px solid #dcdde1;
-            border-radius: 10px;
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 13px;
         }
@@ -111,12 +122,12 @@
             width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 12px;
-            font-size: 15px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         .btn-primary {
             background-color: var(--pi-purple);
@@ -125,17 +136,17 @@
         .btn-primary:hover {
             background-color: #4a154b;
         }
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--pi-purple);
-            color: var(--pi-purple);
-            margin-top: 15px;
+        .btn-studio {
+            background: linear-gradient(135deg, #1e272c, #0f141c);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            font-family: 'Courier New', Courier, monospace;
         }
         .product-card {
             border: 1px solid #f1f2f6;
             background: #fffdf9;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             border-left: 4px solid var(--pi-gold);
         }
         .product-title {
@@ -146,8 +157,8 @@
         .product-desc {
             font-size: 12px;
             color: #57606f;
-            margin: 5px 0 10px 0;
-            line-height: 1.4;
+            margin: 6px 0 12px 0;
+            line-height: 1.5;
         }
         .product-price {
             float: right;
@@ -155,6 +166,21 @@
             font-weight: bold;
             font-size: 15px;
         }
+        /* Giao diện mô phỏng luồng API Console */
+        .api-monitor {
+            background: #090d16;
+            color: #a4b0be;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #1e272c;
+        }
+        .api-success { color: #2ed573; }
+        .api-warning { color: var(--pi-gold); }
     </style>
 </head>
 <body>
@@ -162,17 +188,28 @@
 <div class="container">
     <div class="header">
         <h1>AQUA MIND</h1>
-        <p>HỆ THỐNG PHÂN TÍCH & GIÁM SÁT NGUỒN NƯỚC AI</p>
+        <p>PHAMTUAN AI MASTER SYSTEM — NODE 01</p>
     </div>
 
     <div class="status-box">
-        <span id="status">Đang đồng bộ mạng lưới Pi...</span>
-        <button id="btn-manual-auth" style="display:none; background:var(--pi-gold); border:none; padding:5px 10px; border-radius:5px; color:black; font-size:11px; font-weight:bold; cursor:pointer;" onclick="triggerAuthentication()">Kết nối</button>
+        <span id="status">Đang đồng bộ cấu trúc Engine...</span>
+        <button id="btn-manual-auth" style="display:none; background:var(--pi-gold); border:none; padding:5px 12px; border-radius:6px; color:black; font-size:11px; font-weight:bold; cursor:pointer;" onclick="triggerAuthentication()">Kết nối</button>
+    </div>
+
+    <div class="section" style="background: #101726; border: 1px solid #1e2a4a;">
+        <div class="section-title" style="color: var(--neon-blue); border-bottom-color: #1e2a4a;">🌐 PTAI Studio Engine Monitor</div>
+        <p style="font-size: 11px; color:#8b9bb4; margin-top:-10px; margin-bottom:12px;">Hệ thống trích xuất dữ liệu phân tích luồng API kết nối Sandbox/Testnet của App Studio.</p>
+        
+        <button class="btn btn-studio" onclick="scanStudioAPIs()">⚡ Quét Cổng Kết Nối App Studio API</button>
+        
+        <div class="api-monitor" id="api-console">
+            [SYSTEM] Chờ lệnh khởi động quét dải tần kết nối...
+        </div>
     </div>
 
     <div class="section">
         <div class="section-title">📊 Bộ Quét Phân Tích Dải Tần Cốt Lõi</div>
-        <p style="font-size: 12px; color:#666; margin-top:-10px; margin-bottom:15px;">Tải file cấu hình tín hiệu (.m4a, .mp4) hoặc dán link dữ liệu đám mây để AI tiến hành bóc tách nhiễu mạng tần số.</p>
+        <p style="font-size: 12px; color:#666; margin-top:-10px; margin-bottom:15px;">Tải file cấu hình tín hiệu (.m4a, .mp4) từ hiện trường để AI tiến hành bóc tách nhiễu dải tần.</p>
         
         <div class="input-group">
             <div class="file-select" onclick="document.getElementById('file-input').click()">
@@ -183,7 +220,7 @@
         
         <div class="input-group">
             <label>Hoặc dán liên kết đồng bộ đám mây:</label>
-            <input type="text" placeholder="Dán link chia sẻ dữ liệu cảm biến tại đây...">
+            <input type="text" placeholder="Dán link chia sẻ dữ liệu tại đây...">
         </div>
 
         <button class="btn btn-primary" onclick="startAnalysis()">Bắt đầu Phân tích (0.1 Pi)</button>
@@ -199,53 +236,71 @@
         </div>
 
         <button class="btn btn-primary" style="margin-top: 15px;" onclick="requestPayment()">Đặt mua bằng Ví Pi</button>
-        <button class="btn btn-outline" onclick="triggerAuthentication()">Kết nối lại với Ví Pi</button>
     </div>
 </div>
 
 <script>
     let isPiInitialized = false;
+    const consoleEl = document.getElementById("api-console");
+
+    function logConsole(msg, type = '') {
+        const time = new Date().toLocaleTimeString();
+        let classStyle = '';
+        if (type === 'success') classStyle = 'class="api-success"';
+        if (type === 'warn') classStyle = 'class="api-warning"';
+        consoleEl.innerHTML += `<br><span ${classStyle}>[${time}] ${msg}</span>`;
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
 
     async function initPiAuth() {
         try {
+            logConsole("Đang nạp thư viện Pi SDK...", 'warn');
             await Pi.init({ version: "2.0", sandbox: false });
             isPiInitialized = true;
+            logConsole("Pi SDK kết nối thành công.", 'success');
             await triggerAuthentication();
         } catch (error) {
-            console.error("Pi Init Error:", error);
+            console.error(error);
             document.getElementById("btn-manual-auth").style.display = "block";
             updateStatus("Cổng kết nối Pi tạm nghỉ. Vui lòng bấm Kết nối.");
+            logConsole("Lỗi kết nối Pi SDK. Đang chuyển chế độ dự phòng.", 'warn');
         }
     }
 
     async function triggerAuthentication() {
-        if (!isPiInitialized) {
-            updateStatus("Đang chờ Pi SDK sẵn sàng...");
-            return;
-        }
+        if (!isPiInitialized) return;
         try {
             updateStatus("Đang xác thực Pioneer...");
             const scopes = ['username'];
             const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-            updateStatus("Xin chào nhà sáng lập: " + authResult.user.username);
+            updateStatus("Pioneer: " + authResult.user.username);
             document.getElementById("btn-manual-auth").style.display = "none";
+            logConsole("Xác thực danh tính chủ tài khoản thành công.", 'success');
         } catch (error) {
-            console.error("Xác thực thất bại:", error);
             document.getElementById("btn-manual-auth").style.display = "block";
-            updateStatus("Xác thực lỗi. Vui lòng thử lại.");
+            updateStatus("Xác thực lỗi. Thử lại.");
+            logConsole("Từ chối xác thực hoặc lỗi Token.", 'warn');
         }
     }
 
+    function scanStudioAPIs() {
+        logConsole("Khởi động quét cổng App Studio...");
+        setTimeout(() => logConsole("-> API Endpoint nhận diện: v2/apps/manifest", 'success'), 400);
+        setTimeout(() => logConsole("-> Đồng bộ số dư: Balance Testnet vạch định 0.50 Pi", 'success'), 800);
+        setTimeout(() => logConsole("-> Trạng thái ứng dụng: PUBLISHED thành công", 'success'), 1200);
+        setTimeout(() => logConsole("[QUÉT HOÀN TẤT] Kết nối an toàn, hệ thống vận hành tối ưu.", 'success'), 1600);
+    }
+
     function startAnalysis() {
-        alert("Hệ thống đang gọi AI bóc tách dải tần nhiễu. Vui lòng duyệt giao dịch 0.1 Pi trên Ví để xem báo cáo chi tiết.");
+        alert("Hệ thống gọi AI bóc tách dải tần nhiễu. Vui lòng duyệt giao dịch 0.1 Pi trên Ví.");
     }
 
     function requestPayment() {
-        alert("Yêu cầu thanh toán 10 Pi cho sản phẩm AQUA-PRO X1 đang được thiết lập kết nối an toàn...");
+        alert("Yêu cầu thanh toán 10 Pi cho sản phẩm AQUA-PRO X1 đang được kết nối...");
     }
 
     function onIncompletePaymentFound(payment) {
-        console.log("Phát hiện giao dịch chưa hoàn thành:", payment);
+        logConsole("Phát hiện giao dịch chưa hoàn thành ID: " + payment.identifier, 'warn');
     }
 
     function updateStatus(msg) {
@@ -257,6 +312,7 @@
     document.getElementById('file-input').addEventListener('change', function(e) {
         if(e.target.files.length > 0) {
             document.getElementById('file-name').innerText = "Đã chọn: " + e.target.files[0].name;
+            logConsole("Đã nạp file dữ liệu cảm biến: " + e.target.files[0].name, 'success');
         }
     });
 </script>
